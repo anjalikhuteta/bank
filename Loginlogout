@@ -1,0 +1,77 @@
+package LoginLogout;
+
+import org.testng.annotations.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+
+public class NewTest {
+	
+WebDriver driver ;
+	
+	@BeforeMethod
+	
+	public void Setup() throws InterruptedException  {
+		
+		System.setProperty("webdriver.chrome.driver","C:\\IVS Files\\Selenium\\Drivers\\chromedriver v2.43\\chromedriver.exe");
+		 driver = new ChromeDriver();
+		driver.get("http://10.82.180.36/Common/Login.aspx");
+		
+		Thread.sleep(2000);
+		
+	}
+	
+	 @Test(dataProvider = "credentials")
+	  public void f(String id, String pw) {
+		  
+		  
+		  
+		  System.out.println("Entering username:" + id);
+			driver.findElement(By.id("body_txtUserID")).sendKeys(id);
+			
+			System.out.println("Entering Password:" + pw);
+			driver.findElement(By.id("body_txtPassword")).sendKeys(pw);
+			
+			System.out.println("Clicking Login Button !");
+			driver.findElement(By.id("body_btnLogin")).click();
+			
+			boolean s = driver.findElement(By.id("1bLoginOut")).isDisplayed();
+			
+			if (s) {
+				
+				System.out.println("Login Succesfull");
+			}else {
+				System.out.println("unsuccessful");
+			}
+			
+		
+		}
+	  
+	  
+	  @AfterMethod
+		
+		public void TearDown () throws InterruptedException {
+			
+			Thread.sleep(2000);
+			driver.close();
+			
+		}
+	  
+
+	  @DataProvider(name = "credentials")
+	  public Object[][] getData() {
+		  
+		  Object [][] data = new Object[0][2];
+		data[0][0] = "donhere";
+		data[1][0] = "don@123";
+		  
+		  
+	    return data;
+	    
+	     
+	    };
+	 
+	}
