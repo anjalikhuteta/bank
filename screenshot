@@ -1,0 +1,3 @@
+File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(scrFile, new File("D:\\Image.png"));
+        driver.close();
