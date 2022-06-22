@@ -1,0 +1,168 @@
+package myproject;
+
+import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+import org.testng.annotations.DataProvider;
+
+public class Bloodand {
+	
+	private static final String organizeEvents = null;
+
+	static WebDriver driver;
+	
+	SoftAssert assertion = new SoftAssert();
+	
+	@BeforeClass
+	
+	public void setup() {
+		
+		System.setProperty("webdriver.chrome.driver","C:\\Users\\AKKI\\eclipse-workspace\\myproject\\driver\\chromedriver.exe");
+		driver = new ChromeDriver();
+		driver.get("http:10.82.180.36.81/Automation/Blood%20Donation%20Camp/Home.aspx");
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
+		
+		
+		
+		
+	}
+	
+  
+
+  @DataProvider(name = "logindata")
+  public Object[][] getData() {
+    return new Object[][] { {"JohnPiper", "john1234"}
+      
+    };
+  }
+  
+  
+  @Test(dataProvider = "logindata", priority=0)
+  
+  public void Login(String username, String Password) throws InterruptedException {
+	  
+	  
+	  driver.findElement(By.linkText("login")).click();
+	  Thread.sleep(2000);
+	  driver.findElement(By.xpath("//*[@id=\"textUsername\"]")).sendKeys(username);
+	  Thread.sleep(2000);
+	  driver.findElement(By.xpath("//*[@id=\"textPassword\"]")).sendKeys(username);
+	  
+	  Thread.sleep(2000);
+	  
+	  String actMsg = driver.findElement(By.id("btnSubmit")).getText();
+	  Thread.sleep(2000);
+	  String expMsg = "Successful login!!!";
+	  assertion.assertTrue(actMsg.equals(expMsg), "login was Successful");
+	  
+	  Thread.sleep(2000);
+	  
+	  
+	  
+	  
+  }
+  
+  
+  @Test(dependsOnMethods = {"login"})
+  public void organizedEvent() throws InterruptedException {
+	  driver.findElement(By.linkText("organizedEvent")).click();
+	  Thread.sleep(2000);
+	  
+	  FileInputStream file = new FileInputStream(new file("C:\\Users\\AKKI\\eclipse-workspace\\myproject\\TestData\\ExcelReader.xlsx"));
+	  
+	  XSSFWorkbook Workbook = new  XSSFWorkbook(file);
+	  XSSFSheet Sheet = Workbook.getSheet("file");
+	  int a= Sheet.getLastRowNum();
+	  
+	  
+	for(int i = 1; i<=a;i++) {
+		  
+		  driver.findElement(By.xpath("//*[@id=\"textName\"]")).sendKeys(Sheet.getRow(i).getCell(0).getStringCellValue());
+		  Thread.sleep(2000);
+		  driver.findElement(By.xpath("//*[@id=\"textEmailID\"]")).sendKeys(Sheet.getRow(i).getCell(1).getStringCellValue());
+		  Thread.sleep(2000);
+		  driver.findElement(By.xpath("//*[@id=\"textMobileNumber\"]")).sendKeys(Sheet.getRow(i).getCell(2).getStringCellValue());
+		  Thread.sleep(2000);
+		  
+		  WebElement element1 = driver.findElement(By.xpath("//*[@id=\"dd1CurrentState\"]"));
+		  Select ddr1 = new Select(element1);
+		  ddr1.selectByVisibleText(Sheet.getRow(i).getCell(3).getStringCellValue());
+		  Thread.sleep(2000);
+		  
+		  WebElement element2 = driver.findElement(By.xpath("//*[@id=\"dd1CurrentCity\"]"));
+		  Select ddr2 = new Select(element1);
+		  ddr2.selectByVisibleText(Sheet.getRow(i).getCell(4).getStringCellValue());
+		  Thread.sleep(2000);
+		  
+		  driver.findElement(By.xpath("//*[@id=\"textVenue\"]")).sendKeys(Sheet.getRow(i).getCell(5).getStringCellValue());
+		  Thread.sleep(2000);
+		  
+		  WebElement element3 = driver.findElement(By.xpath("//*[@id=\"dd1CurrentState\"]"));
+		  Select ddr3 = new Select(element1);
+		  ddr3.selectByVisibleText(Sheet.getRow(i).getCell(6).getStringCellValue());
+		  Thread.sleep(2000);
+		  
+		  driver.findElement(By.xpath("//*[@id=\"textType\"]")).sendKeys(Sheet.getRow(i).getCell(7).getStringCellValue());
+		  Thread.sleep(2000);
+		  
+		  driver.findElement(By.xpath("//*[@id=\"textAdditionalComments\"]")).sendKeys(Sheet.getRow(i).getCell(8).getStringCellValue());
+		  Thread.sleep(2000);
+		  
+		  driver.findElement(By.xpath("//*[@id=\"btnSubmit\"]")).click();
+		  
+		  Thread.sleep(2000);
+		  
+		  String output = driver.findElement(By.xpath("//*[@id=\"lblSuccessMessage\"]")).getText();
+		  
+		  System.out.println(output);
+		  Thread.sleep(2000);
+	  }
+	
+	@Test(dependsOnMethods = {"organizeEvents"})
+	
+	public void Myths() {
+		
+		driver.findElement(By.xpath("//*[@id=\"form1\"]/div[3]/div/div[2]/ul/li[6]/a")).click();
+		
+		Thread.sleep(2000);
+		
+		File img = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+		FileUtils.copyFile(img,new File("C:\\image.png"));
+		
+		  
+		
+	}
+	
+	@AfterClass
+	
+	public void tearDown() {
+		
+		driver.close();
+		driver.quit();
+		
+	}
+
+
+}
+	                             
+	  
+	  
+	  
